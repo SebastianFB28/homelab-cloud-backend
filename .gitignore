@@ -45,3 +45,6 @@ target/
 
 # OS
 .DS_Store
+
+#varibles the user may want to ignore
+.env
