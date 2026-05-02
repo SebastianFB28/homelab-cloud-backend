@@ -6,4 +6,9 @@ public interface JwtTokenPort {
 
     String generateToken(User user);
 
+    String extractUsername(String token);
+
+    boolean validateToken(String token);
+
+
 }
