@@ -1,5 +1,7 @@
 package com.homelab.cloud.infrastructure.config;
 
+import com.homelab.cloud.infrastructure.adapter.in.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -7,6 +9,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -15,31 +18,35 @@ import java.util.List;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor // IMPORTANTE: Agregamos esto para inyectar nuestro filtro
 public class SecurityConfig {
+
+    private final JwtAuthenticationFilter jwtAuthFilter; // IMPORTANTE: Inyectamos nuestro guardia
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
+                // 1. Mantenemos TU configuración CORS intacta
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
 
-                // 1. Desactivamos CSRF porque nuestra API es Stateless y usa JWT
+                // 2. Desactivamos CSRF porque nuestra API es Stateless y usa JWT
                 .csrf(AbstractHttpConfigurer::disable)
 
-                // 2. Le decimos que NO guarde sesiones en memoria (vital para JWT)
+                // 3. Le decimos que NO guarde sesiones en memoria (vital para JWT)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 
-                // 3. Configuramos quién entra y quién no
+                // 4. Configuramos quién entra y quién no
                 .authorizeHttpRequests(auth -> auth
-                        // Dejamos las puertas abiertas de par en par para todo lo que empiece con /api/auth
+                        // La Taquilla (Pública)
                         .requestMatchers("/api/auth/**").permitAll()
-
-                        // Cualquier otra puerta de la aplicación (en el futuro) exigirá estar autenticado
+                        // El Club (Protegido)
                         .anyRequest().authenticated()
-                );
+                )
+                // 5. IMPORTANTE: Ponemos a nuestro guardia ANTES del filtro por defecto de Spring
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
-
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {

@@ -9,6 +9,7 @@ import com.homelab.cloud.domain.model.User;
 // import JWT library
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.Claims;
 
 // import spring framework
 import org.springframework.beans.factory.annotation.Value;
@@ -48,5 +49,29 @@ public class JwtAdapter implements JwtTokenPort {
                 // sign the token with the secret key
                 .signWith(getSigningKey())
                 .compact();
+    }
+
+    @Override
+    public String extractUsername(String token) {
+        return extractAllClaims(token).getSubject();
+    }
+
+
+    @Override
+    public boolean validateToken(String token) {
+        try {
+            return !extractAllClaims(token).getExpiration().before(new Date());
+        } catch (Exception e) {
+            return false; // Si explota (firma mala, expirado), es inválido
+        }
+    }
+
+
+    private Claims extractAllClaims(String token) {
+        return Jwts.parser()
+                .verifyWith(getSigningKey())
+                .build()
+                .parseSignedClaims(token)
+                .getPayload();
     }
 }
