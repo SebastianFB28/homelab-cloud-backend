@@ -14,7 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-
+import org.springframework.web.servlet.HandlerExceptionResolver;
 import java.io.IOException;
 
 @Component
@@ -23,7 +23,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenPort jwtTokenPort; // Tu adaptador con los superpoderes
     private final UserDetailsService userDetailsService; // El paso 3
-
+    private final HandlerExceptionResolver handlerExceptionResolver;
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -62,10 +62,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 }
             }
+            filterChain.doFilter(request, response);
         } catch (Exception e) {
             SecurityContextHolder.clearContext();
+            handlerExceptionResolver.resolveException(request, response, null, e);
         }
 
-        filterChain.doFilter(request, response);
+
     }
 }

@@ -7,6 +7,7 @@ import com.homelab.cloud.domain.exceptions.UserNotApprovedException;
 import com.homelab.cloud.presentation.dto.AuthDto.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -56,5 +57,27 @@ public class GlobalExceptionHandler {
         );
         // Opcional: Aquí podrías hacer un log.error(ex.getMessage()) para ver qué falló en la consola
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+
+
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<ErrorResponse> handleSpringSecurityAccessDenied(AccessDeniedException ex) {
+        ErrorResponse error = new ErrorResponse(
+                "Acceso denegado: No tienes los permisos de Administrador para realizar esta acción.",
+                HttpStatus.FORBIDDEN.value(), // 403 Forbidden
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(error);
+    }
+
+    @ExceptionHandler(io.jsonwebtoken.ExpiredJwtException.class) // O la clase de tu librería
+    public ResponseEntity<ErrorResponse> handleExpiredToken(Exception ex) {
+        ErrorResponse error = new ErrorResponse(
+                "Tu sesión ha expirado o el token es inválido. Por favor, inicia sesión de nuevo.",
+                HttpStatus.UNAUTHORIZED.value(), // 401 Unauthorized
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }

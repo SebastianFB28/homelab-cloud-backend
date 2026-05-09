@@ -1,13 +1,24 @@
 package com.homelab.cloud.infrastructure.config;
 
+
+// import ports in
 import com.homelab.cloud.application.port.in.AuthUseCase;
-import com.homelab.cloud.application.port.out.JwtTokenPort;
+import com.homelab.cloud.application.port.in.GetPendingUsersUseCase;
+
+// import ports out
 import com.homelab.cloud.application.port.out.PasswordEncodePort;
 import com.homelab.cloud.application.port.out.UserRepositoryPort;
+
+// import services
 import com.homelab.cloud.application.service.AuthService;
+import com.homelab.cloud.application.service.AdminGetPendingUserService;
+
+// import springframework
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+// iport spring security
+import com.homelab.cloud.application.port.out.JwtTokenPort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -27,9 +38,19 @@ public class ApplicationConfig {
         return new AuthService(userRepositoryPort, jwtTokenPort, passwordEncodePort);
     }
 
-
+    /**
+     * Bean for the password encoder
+     * @return BCryptPasswordEncoder
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public GetPendingUsersUseCase getPendingUsersUseCase(
+            UserRepositoryPort userRepositoryPort) {
+        return new AdminGetPendingUserService(userRepositoryPort);
+    }
+
 }
