@@ -1,5 +1,8 @@
 package com.homelab.cloud.domain.enums;
 
+import lombok.Getter;
+
+@Getter
 public enum AccessStatus {
 
     PENDING("Estmos rebisando tu solicitud de acceso"),
@@ -11,9 +14,5 @@ public enum AccessStatus {
 
     AccessStatus(String description) {
         this.description = description;
-    }
-
-    public String getDescription() {
-        return description;
     }
 }

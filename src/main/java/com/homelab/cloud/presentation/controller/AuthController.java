@@ -16,6 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+// import jakarta validation
+import jakarta.validation.Valid;
+
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
@@ -24,7 +27,7 @@ public class AuthController {
     private final AuthUseCase authUseCase;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
         // Llamamos al caso de uso. Como request es un 'record', usamos métodos como email() en vez de getEmail()
         authUseCase.requestAccess(request.email(), request.password(), request.nickname());
 
