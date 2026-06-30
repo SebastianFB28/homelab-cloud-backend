@@ -1,4 +1,4 @@
-package com.homelab.cloud.presentation.dto.UserDto;
+package com.homelab.cloud.presentation.dto.userdto;
 
 // import lombok
 import lombok.Builder;

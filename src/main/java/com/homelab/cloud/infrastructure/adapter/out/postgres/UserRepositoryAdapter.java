@@ -10,6 +10,8 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
+
 @Component
 @RequiredArgsConstructor
 public class UserRepositoryAdapter implements UserRepositoryPort{
@@ -38,13 +40,29 @@ public class UserRepositoryAdapter implements UserRepositoryPort{
     public boolean existsByEmail(String email) {
         return jpaRepository.existsByEmail(email);
     }
-
-
+;
     @Override
     public List<User> findByStatus(AccessStatus status) {
         return jpaRepository.findByAccessStatus(status)
                 .stream()
                 .map(UserEntity::toDomain) // Aprovechamos tu mapper
                 .toList(); // .toList() es la forma moderna de recolectar a partir de Java 16+
+    }
+
+
+    @Override
+    public boolean existsById(UUID userId) {
+
+        return jpaRepository.existsById(userId);
+    }
+
+    /**
+     * Busca un usuario por su ID.
+     * @param id
+     * @return User
+     */
+    @Override
+    public Optional<User> findById(UUID id) {
+        return jpaRepository.findById(id).map(UserEntity::toDomain);
     }
 }

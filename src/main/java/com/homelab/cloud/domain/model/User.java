@@ -1,6 +1,7 @@
 package com.homelab.cloud.domain.model;
 
 // import the necessary dependencies from Lombok
+import com.homelab.cloud.domain.exceptions.UserBannedException;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,18 @@ public class User {
     private AccessStatus status;
     private String nickname;
     private LocalDateTime createdAt;
+
+
+
+    public void changeAccessStatus(AccessStatus newStatus) {
+
+        // Implement the logic to prevent changing status from BANNED to PENDING
+        if (this.status == AccessStatus.BANNED ){
+            throw new UserBannedException("Usuario baneado no puede ser cambiado a pendiente");
+        }
+        this.status = newStatus;
+    }
+
+
 
 }

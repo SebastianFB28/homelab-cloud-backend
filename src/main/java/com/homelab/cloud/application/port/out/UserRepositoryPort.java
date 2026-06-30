@@ -7,6 +7,7 @@ import com.homelab.cloud.domain.model.User;
 // import java optional
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 public interface UserRepositoryPort {
 
@@ -18,5 +19,9 @@ public interface UserRepositoryPort {
     boolean existsByEmail(String email);
 
     List<User> findByStatus(AccessStatus status);
+
+    boolean existsById(UUID userId);
+
+    Optional<User> findById(UUID id);
 
 }

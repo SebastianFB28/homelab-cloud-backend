@@ -4,9 +4,9 @@ package com.homelab.cloud.presentation.controller;
 import com.homelab.cloud.application.port.in.AuthUseCase;
 
 // import Dtos
-import com.homelab.cloud.presentation.dto.AuthDto.RegisterRequest;
-import com.homelab.cloud.presentation.dto.AuthDto.LoginRequest;
-import com.homelab.cloud.presentation.dto.AuthDto.AuthResponse;
+import com.homelab.cloud.presentation.dto.authdto.RegisterRequest;
+import com.homelab.cloud.presentation.dto.authdto.LoginRequest;
+import com.homelab.cloud.presentation.dto.authdto.AuthResponse;
 
 // import lombok
 import lombok.RequiredArgsConstructor;

@@ -18,4 +18,5 @@ public interface SpringDataUserRepository extends JpaRepository<UserEntity, UUID
 
     List<UserEntity> findByAccessStatus(AccessStatus accessStatus);
 
+
 }

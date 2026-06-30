@@ -1,4 +1,4 @@
-package com.homelab.cloud.presentation.dto.AuthDto;
+package com.homelab.cloud.presentation.dto.authdto;
 
 import java.time.LocalDateTime;
 

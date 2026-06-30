@@ -1,11 +1,7 @@
 package com.homelab.cloud.presentation.exception;
 
-import com.homelab.cloud.domain.exceptions.InvalidCredentialsException;
-import com.homelab.cloud.domain.exceptions.UserAlreadyExistsException;
-import com.homelab.cloud.domain.exceptions.UserBannedException;
-import com.homelab.cloud.domain.exceptions.UserNotApprovedException;
-import com.homelab.cloud.domain.exceptions.UserRejectedException; // <-- Agregado
-import com.homelab.cloud.presentation.dto.AuthDto.ErrorResponse;
+import com.homelab.cloud.domain.exceptions.*;
+import com.homelab.cloud.presentation.dto.authdto.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
@@ -109,5 +105,15 @@ public class GlobalExceptionHandler {
         );
         // Tip: usa un logger aquí en el futuro -> log.error("Unhandled exception: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFound(UserNotFoundException ex) {
+        ErrorResponse error = new ErrorResponse(
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value(), // 404 Not Found
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
     }
 }

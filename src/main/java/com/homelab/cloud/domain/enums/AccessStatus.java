@@ -5,7 +5,7 @@ import lombok.Getter;
 @Getter
 public enum AccessStatus {
 
-    PENDING("Estmos rebisando tu solicitud de acceso"),
+    PENDING("Estamos revisando tu solicitud de acceso"),
     APPROVED("Tu solicitud de acceso ha sido aprobada"),
     REJECTED("Tu solicitud de acceso ha sido rechazada"),
     BANNED("Tu acceso ha sido bloqueado por acciones inapropiadas");

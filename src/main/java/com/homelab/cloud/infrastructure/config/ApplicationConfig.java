@@ -3,15 +3,16 @@ package com.homelab.cloud.infrastructure.config;
 
 // import ports in
 import com.homelab.cloud.application.port.in.AuthUseCase;
-import com.homelab.cloud.application.port.in.GetPendingUsersUseCase;
+import com.homelab.cloud.application.port.in.IGetUsersByStatusUseCase;
 
 // import ports out
+import com.homelab.cloud.application.port.in.IUpdateUserStatusUseCase;
 import com.homelab.cloud.application.port.out.PasswordEncodePort;
 import com.homelab.cloud.application.port.out.UserRepositoryPort;
 
 // import services
 import com.homelab.cloud.application.service.AuthService;
-import com.homelab.cloud.application.service.AdminGetPendingUserService;
+import com.homelab.cloud.application.service.GetUsersByStatusService;
 
 // import springframework
 import org.springframework.context.annotation.Bean;
@@ -48,9 +49,13 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public GetPendingUsersUseCase getPendingUsersUseCase(
+    public IGetUsersByStatusUseCase getPendingUsersUseCase(
             UserRepositoryPort userRepositoryPort) {
-        return new AdminGetPendingUserService(userRepositoryPort);
+        return new GetUsersByStatusService(userRepositoryPort);
     }
 
+    @Bean
+    public IUpdateUserStatusUseCase updateUserStatusUseCase(UserRepositoryPort userRepositoryPort) {
+        return new com.homelab.cloud.application.service.UpdateUserStatusService(userRepositoryPort);
+    }
 }
