@@ -65,4 +65,9 @@ public class UserRepositoryAdapter implements UserRepositoryPort{
     public Optional<User> findById(UUID id) {
         return jpaRepository.findById(id).map(UserEntity::toDomain);
     }
+
+    @Override
+    public void deleteById(UUID userId) {
+        jpaRepository.deleteById(userId);
+    }
 }

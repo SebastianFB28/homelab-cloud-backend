@@ -33,7 +33,10 @@ public class User {
     private LocalDateTime createdAt;
 
 
-
+    /**
+     * Quick status change for a newly created user
+     * @param newStatus
+     */
     public void changeAccessStatus(AccessStatus newStatus) {
 
         // Implement the logic to prevent changing status from BANNED to PENDING
@@ -43,6 +46,39 @@ public class User {
         this.status = newStatus;
     }
 
+    /**
+     * A more comprehensive change, for a specific user or banned users.
+     * It validates the fields and only changes the fields requested to be changed.
+     * @param newNickname
+     * @param newEncodedPassword
+     * @param newRole
+     * @param newStatus
+     */
+    public void updateByAdmin(String newNickname, String newEncodedPassword, Role newRole, AccessStatus newStatus) {
+        if (newNickname != null && !newNickname.isBlank()) {
+            this.nickname = newNickname;
+        }
 
+
+        if (newEncodedPassword != null) {
+            this.password = newEncodedPassword;
+        }
+
+        if (newRole != null) {
+            this.role = newRole;
+        }
+        if (newStatus != null) {
+            this.status = newStatus;
+        }
+    }
+
+    /**
+     * Change the user's status to "deleted."
+     * @param status
+     */
+    public void sofDelete (){
+            this.status = AccessStatus.DELETED;
+
+    }
 
 }

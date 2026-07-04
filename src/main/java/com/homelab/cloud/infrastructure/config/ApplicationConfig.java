@@ -2,11 +2,9 @@ package com.homelab.cloud.infrastructure.config;
 
 
 // import ports in
-import com.homelab.cloud.application.port.in.AuthUseCase;
-import com.homelab.cloud.application.port.in.IGetUsersByStatusUseCase;
+import com.homelab.cloud.application.port.in.*;
 
 // import ports out
-import com.homelab.cloud.application.port.in.IUpdateUserStatusUseCase;
 import com.homelab.cloud.application.port.out.PasswordEncodePort;
 import com.homelab.cloud.application.port.out.UserRepositoryPort;
 
@@ -58,4 +56,22 @@ public class ApplicationConfig {
     public IUpdateUserStatusUseCase updateUserStatusUseCase(UserRepositoryPort userRepositoryPort) {
         return new com.homelab.cloud.application.service.UpdateUserStatusService(userRepositoryPort);
     }
+
+    @Bean
+    public IUpdateUserByAdminUseCase updateUserByAdminUseCase(
+            UserRepositoryPort userRepositoryPort,
+            PasswordEncodePort passwordEncodePort
+    ) {
+        return new com.homelab.cloud.application.service.UpdateUserByAdminService(
+                userRepositoryPort,
+                passwordEncodePort
+        );
+    }
+
+    @Bean
+    public IDeleteUserUseCase deleteUserUseCase(UserRepositoryPort userRepositoryPort) {
+        return new com.homelab.cloud.application.service.DeleteUserService(userRepositoryPort);
+    }
+
+
 }

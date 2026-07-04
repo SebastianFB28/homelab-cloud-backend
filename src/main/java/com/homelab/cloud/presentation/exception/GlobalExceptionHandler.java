@@ -6,10 +6,12 @@ import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException; // <-- Agregado para validar "a" o "12"
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import java.time.LocalDateTime;
 
@@ -115,5 +117,33 @@ public class GlobalExceptionHandler {
                 LocalDateTime.now()
         );
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
+    }
+
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleHttpMessageNotReadable(HttpMessageNotReadableException ex) {
+        ErrorResponse error = new ErrorResponse(
+                "Error en el formato de los datos enviados. Verifica que los valores ingresados (como el rol o el estado) sean válidos.",
+                HttpStatus.BAD_REQUEST.value(), // 400 Bad Request
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
+    }
+
+
+
+    // 2. ESCUDO PARA LA URL (Path Variables y Query Params)
+    // Atrapa cuando envías /users?status=BATMAN o /users/un-uuid-falso
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<ErrorResponse> handleTypeMismatch(MethodArgumentTypeMismatchException ex) {
+        // Extraemos el nombre del parámetro que falló para darle un mejor mensaje al cliente
+        String paramName = ex.getName();
+
+        ErrorResponse error = new ErrorResponse(
+                "El valor enviado para el parámetro '" + paramName + "' no es válido o tiene un formato incorrecto.",
+                HttpStatus.BAD_REQUEST.value(), // 400 Bad Request
+                LocalDateTime.now()
+        );
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(error);
     }
 }

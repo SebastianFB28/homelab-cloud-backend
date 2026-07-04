@@ -1,11 +1,15 @@
 package com.homelab.cloud.presentation.controller;
 
 // import port in
+import com.homelab.cloud.application.port.in.IDeleteUserUseCase;
 import com.homelab.cloud.application.port.in.IGetUsersByStatusUseCase;
 import com.homelab.cloud.application.port.in.IUpdateUserStatusUseCase;
+import com.homelab.cloud.application.port.in.IUpdateUserByAdminUseCase;
 // import dtos
 import com.homelab.cloud.domain.enums.AccessStatus;
 import com.homelab.cloud.presentation.dto.userdto.UserResponse;
+import com.homelab.cloud.presentation.dto.userdto.AdminUpdateUserRequest;
+
 
 // import lombok
 import lombok.RequiredArgsConstructor;
@@ -27,6 +31,9 @@ public class AdminController {
 
     private final IGetUsersByStatusUseCase getUsersByStatusUseCase;
     private final IUpdateUserStatusUseCase updateUserStatusUseCase;
+    private final IUpdateUserByAdminUseCase updateUserByAdminUseCase;
+    private final IDeleteUserUseCase deleteUserUseCase;
+
 
     /**
      * Get users filter by status
@@ -37,7 +44,7 @@ public class AdminController {
     public ResponseEntity<List<UserResponse>> getPendingUsers(@RequestParam AccessStatus status) {
         List<UserResponse> response = getUsersByStatusUseCase.getUserByStatus(status)
                 .stream()
-                .map(UserResponse::fromDomain) // ¡Mira qué elegante y limpio queda gracias a tu idea!
+                .map(UserResponse::fromDomain)
                 .toList();
         return ResponseEntity.ok(response);
     }
@@ -53,10 +60,48 @@ public class AdminController {
     @PatchMapping("/{userId}/status")
     public ResponseEntity<Void> updateUserStatus(
             @PathVariable UUID userId,
-            @RequestParam AccessStatus newStatus) { // <-- Ojo: es @RequestParam, no @PathVariable
+            @RequestParam AccessStatus newStatus) {
 
         updateUserStatusUseCase.updateUserStatus(userId, newStatus);
 
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<Void> updateUserByAdmin (
+            @PathVariable UUID userId,
+            @RequestBody AdminUpdateUserRequest request){
+
+        updateUserByAdminUseCase.update(
+                userId,
+                request.nickname(),
+                request.password(),
+                request.role(),
+                request.status()
+        );
+
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Physical deletion for a user
+     * @param userID
+     * @return
+     */
+    @DeleteMapping("/{userID}")
+    public ResponseEntity<Void> deleteUserByAdmin (
+            @PathVariable UUID userID){
+
+        deleteUserUseCase.hardDelete(userID);
+        return ResponseEntity.noContent().build();
+    }
+
+    // 2. SOFT DELETE (Borrado lógico)
+    // URL en Postman: PATCH http://localhost:8080/api/v1/admin/users/{userId}/soft-delete
+    @PatchMapping("/{userId}/soft-delete")
+    public ResponseEntity<Void> softDeleteUser(@PathVariable UUID userId) {
+        deleteUserUseCase.sofDelete(userId);
+        return ResponseEntity.noContent().build();
+    }
+
 }

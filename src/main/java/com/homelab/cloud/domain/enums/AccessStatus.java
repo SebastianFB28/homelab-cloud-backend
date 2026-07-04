@@ -8,7 +8,8 @@ public enum AccessStatus {
     PENDING("Estamos revisando tu solicitud de acceso"),
     APPROVED("Tu solicitud de acceso ha sido aprobada"),
     REJECTED("Tu solicitud de acceso ha sido rechazada"),
-    BANNED("Tu acceso ha sido bloqueado por acciones inapropiadas");
+    BANNED("Tu acceso ha sido bloqueado por acciones inapropiadas"),
+    DELETED("Tu cuenta ha sido eliminada");
 
     private final String description;
 
