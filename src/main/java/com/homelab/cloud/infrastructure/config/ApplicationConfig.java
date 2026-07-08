@@ -5,8 +5,7 @@ package com.homelab.cloud.infrastructure.config;
 import com.homelab.cloud.application.port.in.*;
 
 // import ports out
-import com.homelab.cloud.application.port.out.PasswordEncodePort;
-import com.homelab.cloud.application.port.out.UserRepositoryPort;
+import com.homelab.cloud.application.port.out.*;
 
 // import services
 import com.homelab.cloud.application.service.AuthService;
@@ -17,7 +16,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 // iport spring security
-import com.homelab.cloud.application.port.out.JwtTokenPort;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -53,8 +51,10 @@ public class ApplicationConfig {
     }
 
     @Bean
-    public IUpdateUserStatusUseCase updateUserStatusUseCase(UserRepositoryPort userRepositoryPort) {
-        return new com.homelab.cloud.application.service.UpdateUserStatusService(userRepositoryPort);
+    public IUpdateUserStatusUseCase updateUserStatusUseCase(
+            UserRepositoryPort userRepositoryPort,
+            EventPublisherPort eventPublisherPort) { // <--- Agregamos el puerto de eventos
+        return new com.homelab.cloud.application.service.UpdateUserStatusService(userRepositoryPort, eventPublisherPort);
     }
 
     @Bean
@@ -71,6 +71,12 @@ public class ApplicationConfig {
     @Bean
     public IDeleteUserUseCase deleteUserUseCase(UserRepositoryPort userRepositoryPort) {
         return new com.homelab.cloud.application.service.DeleteUserService(userRepositoryPort);
+    }
+
+    @Bean
+    public IInitializeStorageQuotaUseCase initializeStorageQuotaUseCase(
+            StorageQuotaRepositoryPort storageQuotaRepositoryPort) {
+        return new com.homelab.cloud.application.service.InitializeStorageQuotaService(storageQuotaRepositoryPort);
     }
 
 

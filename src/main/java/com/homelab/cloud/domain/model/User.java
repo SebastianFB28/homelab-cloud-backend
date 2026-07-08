@@ -47,6 +47,26 @@ public class User {
     }
 
     /**
+     * We take the new status and verify that it is not the same
+     * as the one the user already has in the system.
+     * @param status
+     * @return
+     */
+    public boolean validateStatus(AccessStatus status) {
+        return this.status == status;
+    }
+
+    /**
+     * We validate whether the event can be executed or not.
+     * @param newStatus
+     * @return
+     */
+    public boolean wasApprovedEvent(AccessStatus newStatus) {
+        return this.status != AccessStatus.APPROVED
+                && newStatus == AccessStatus.APPROVED;
+    }
+
+    /**
      * A more comprehensive change, for a specific user or banned users.
      * It validates the fields and only changes the fields requested to be changed.
      * @param newNickname
