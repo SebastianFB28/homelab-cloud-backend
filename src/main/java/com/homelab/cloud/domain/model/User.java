@@ -101,4 +101,20 @@ public class User {
 
     }
 
+
+    /**
+     * User method to update nickname or password
+     * @param newNickname
+     * @param newPassword
+     */
+    public void updateProfile (String newNickname , String newPassword){
+
+        if (newNickname != null && !newNickname.isBlank()) {
+            this.nickname = newNickname;
+        }
+        if (newPassword != null && !newPassword.isBlank()) {
+            this.password = newPassword;
+        }
+    }
+
 }

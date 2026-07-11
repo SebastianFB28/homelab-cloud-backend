@@ -12,6 +12,7 @@ import com.homelab.cloud.application.service.AuthService;
 import com.homelab.cloud.application.service.GetUsersByStatusService;
 
 // import springframework
+import com.homelab.cloud.infrastructure.adapter.out.storage.StorageProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -77,6 +78,26 @@ public class ApplicationConfig {
     public IInitializeStorageQuotaUseCase initializeStorageQuotaUseCase(
             StorageQuotaRepositoryPort storageQuotaRepositoryPort) {
         return new com.homelab.cloud.application.service.InitializeStorageQuotaService(storageQuotaRepositoryPort);
+    }
+
+    @Bean
+    public GetUserDashboardUseCase getUserDashboardUseCase(
+            StorageQuotaRepositoryPort storageQuotaRepositoryPort
+    ) {
+        return new com.homelab.cloud.application.service.GetUserDashboardService(storageQuotaRepositoryPort);
+    }
+
+    @Bean
+    public UpdateProfileUseCase updateProfileUseCase(
+            UserRepositoryPort userRepositoryPort,
+            PasswordEncodePort passwordEncodePort
+    ){
+        return new com.homelab.cloud.application.service.UpdateProfileService(userRepositoryPort, passwordEncodePort);
+    }
+
+    @Bean
+    public UploadAvatarUseCase uploadAvatarUseCase(StorageProperties storageProperties) {
+        return new com.homelab.cloud.application.service.UploadAvatarService(storageProperties);
     }
 
 

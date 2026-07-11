@@ -6,10 +6,13 @@ import com.homelab.cloud.domain.exceptions.UserBannedException;
 import com.homelab.cloud.domain.exceptions.UserNotApprovedException;
 import com.homelab.cloud.domain.exceptions.UserRejectedException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -35,14 +38,17 @@ public class CustomUserDetailsService implements UserDetailsService {
             case PENDING -> throw new UserNotApprovedException(AccessStatus.PENDING.getDescription());
             case REJECTED -> throw new UserRejectedException(AccessStatus.REJECTED.getDescription()); // Usamos la nueva
             case BANNED -> throw new UserBannedException(AccessStatus.BANNED.getDescription());
+            case DELETED -> throw new UserRejectedException(AccessStatus.DELETED.getDescription());
             case APPROVED -> {} // Pasa libremente
         }
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
-                .password(user.getPassword())
-                .roles(user.getRole().name())
-                .build();
+        return new CustomUserDetails(
+                user.getId(),
+                user.getEmail(),
+                user.getPassword(),
+                user.getNickname(),
+                List.of(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()))
+        );
     }
 
 

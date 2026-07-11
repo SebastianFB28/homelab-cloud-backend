@@ -40,7 +40,7 @@ public class SecurityConfig {
                 // 4. Configuramos quién entra y quién no
                 .authorizeHttpRequests(auth -> auth
                         // La Taquilla (Pública)
-                        .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/v1/auth/**").permitAll()
                         // El Club (Protegido)
                         .anyRequest().authenticated()
                 )
