@@ -100,5 +100,9 @@ public class ApplicationConfig {
         return new com.homelab.cloud.application.service.UploadAvatarService(storageProperties);
     }
 
+    @Bean
+    public GetAvatarUseCase getAvatarUseCase(LoadAvatarPort loadAvatarPort) {
+        return new com.homelab.cloud.application.service.GetAvatarService(loadAvatarPort);
+    }
 
 }

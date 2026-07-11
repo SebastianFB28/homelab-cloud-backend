@@ -1,10 +1,10 @@
 package com.homelab.cloud.application.port.in;
 
-import org.springframework.web.multipart.MultipartFile;
 
+import java.io.InputStream;
 import java.util.UUID;
 
 public interface UploadAvatarUseCase {
 
-    void execute(UUID userId, MultipartFile file);
+    void execute(UUID userId, InputStream imageStream);
 }
