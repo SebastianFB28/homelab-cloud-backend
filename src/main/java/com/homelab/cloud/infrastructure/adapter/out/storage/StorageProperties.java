@@ -10,4 +10,9 @@ public class StorageProperties {
 
     @Value("${homelab.storage.avatar-dir}")
     private String avatarDir;
+
+    @Value("${homelab.storage.files-dir}")
+    private String filesDir;
+
+
 }

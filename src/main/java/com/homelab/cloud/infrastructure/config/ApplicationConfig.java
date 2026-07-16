@@ -105,4 +105,31 @@ public class ApplicationConfig {
         return new com.homelab.cloud.application.service.GetAvatarService(loadAvatarPort);
     }
 
+    @Bean
+    public CreateFolderUseCase createFolderUseCase(FolderRepositoryPort folderRepositoryPort){
+        return new com.homelab.cloud.application.service.CreateFolderService(folderRepositoryPort);
+    }
+
+    @Bean
+    public UploadFileUseCase uploadFileUseCase(
+            FolderRepositoryPort folderRepositoryPort,
+            FileItemRepositoryPort fileItemRepositoryPort,
+            PhysicalStoragePort physicalStoragePort,
+            StorageQuotaRepositoryPort storageQuotaRepositoryPort) {
+        return new com.homelab.cloud.application.service.UploadFileService(
+                folderRepositoryPort,
+                fileItemRepositoryPort,
+                physicalStoragePort,
+                storageQuotaRepositoryPort
+        );
+    }
+
+    @Bean
+    public ListDirectoryUseCase listDirectoryUseCase(
+            FileItemRepositoryPort fileItemRepositoryPort,
+            FolderRepositoryPort folderRepositoryPort){
+        return new com.homelab.cloud.application.service.ListDirectoryService(
+                fileItemRepositoryPort,
+                folderRepositoryPort);
+    }
 }
