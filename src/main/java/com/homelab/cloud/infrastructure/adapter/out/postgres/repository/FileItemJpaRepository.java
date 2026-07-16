@@ -4,9 +4,13 @@ import com.homelab.cloud.infrastructure.adapter.out.postgres.entity.FileItemEnti
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface FileItemJpaRepository extends JpaRepository<FileItemEntity, UUID> {
 
     List<FileItemEntity> findByParentFolderIdAndOwnerId(UUID parentFolderId, UUID ownerId);
+
+    Optional<FileItemEntity> findByIdAndOwnerId(UUID id, UUID ownerId);
+
 }

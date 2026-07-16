@@ -22,13 +22,11 @@ public class FileSystemStorageAdapter implements PhysicalStoragePort {
     @Override
     public String saveFile(InputStream inputStream, String originalFilename, String ownerId) {
         try {
-            // Creamos una carpeta por usuario para organizar el disco duro físicamente
             Path userDir = Paths.get(storageProperties.getFilesDir(), ownerId);
             if (!Files.exists(userDir)) {
                 Files.createDirectories(userDir);
             }
 
-            // Usamos un UUID para el nombre físico para evitar colisiones de nombres idénticos
             String physicalFileName = UUID.randomUUID().toString() + "_" + originalFilename;
             Path targetPath = userDir.resolve(physicalFileName);
 
@@ -46,6 +44,20 @@ public class FileSystemStorageAdapter implements PhysicalStoragePort {
             Files.deleteIfExists(Paths.get(physicalPath));
         } catch (IOException e) {
             throw new RuntimeException("Error al eliminar el archivo físico: " + physicalPath, e);
+        }
+    }
+
+    @Override
+    public InputStream loadFile(String physicalPath) {
+        try{
+            Path path = Paths.get(physicalPath);
+            if (!Files.exists(path)) {
+                throw new IllegalArgumentException("El archivo físico no existe en el almacenamiento: " + physicalPath);
+            }
+            return Files.newInputStream(path);
+
+        }catch (IOException e){
+            throw new RuntimeException("Error al leer el archivo físico del disco duro", e);
         }
     }
 }

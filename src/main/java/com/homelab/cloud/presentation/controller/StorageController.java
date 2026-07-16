@@ -7,7 +7,10 @@ import com.homelab.cloud.domain.storage.StorageNode;
 import com.homelab.cloud.domain.valueobject.AvatarImage;
 import com.homelab.cloud.infrastructure.adapter.out.security.CustomUserDetails;
 import com.homelab.cloud.presentation.dto.storage.CreateFolderRequest;
+import com.homelab.cloud.presentation.dto.storage.DownloadedFile;
+import org.springframework.core.io.Resource;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -32,6 +35,7 @@ public class StorageController {
     private final CreateFolderUseCase createFolderUseCase;
     private final UploadFileUseCase uploadFileUseCase;
     private final ListDirectoryUseCase listDirectoryUseCase;
+    private final DownloadFileUseCase downloadFileUseCase;
 
     // Constante para el límite de 2MB (2 * 1024 * 1024 bytes)
     private static final long MAX_AVATAR_SIZE = 2097152L;
@@ -121,6 +125,26 @@ public class StorageController {
 
         List<StorageNode> directoryContent = listDirectoryUseCase.listDirectory(folderId, userDetails.getId());
         return ResponseEntity.ok(directoryContent);
+    }
+
+
+    @GetMapping("/files/{fileId}/download")
+    public ResponseEntity<Resource> downloadFile(
+            @AuthenticationPrincipal CustomUserDetails userDetails,
+            @PathVariable UUID fileId) {
+
+        // Ejecutamos el caso de uso
+        DownloadedFile downloadedFile = downloadFileUseCase.downloadFile(fileId, userDetails.getId());
+
+        // Creamos un recurso de Spring para envolver el stream de datos
+        InputStreamResource resource = new InputStreamResource(downloadedFile.inputStream());
+
+        return ResponseEntity.ok()
+                // Forzamos la descarga con attachment y asignamos su nombre original
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + downloadedFile.fileName()+ "\"")
+                .contentType(MediaType.parseMediaType(downloadedFile.mimeType()))
+                .contentLength(downloadedFile.sizeInBytes())
+                .body(resource);
     }
 
 }

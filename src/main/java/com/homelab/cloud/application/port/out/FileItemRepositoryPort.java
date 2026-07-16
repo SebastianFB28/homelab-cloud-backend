@@ -19,4 +19,6 @@ public interface FileItemRepositoryPort {
      * @return
      */
     List<FileItem> findByParentFolderIdAndOwnerId(UUID parentFolderId, UUID ownerId);
+
+    Optional<FileItem> findByIdAndOwnerId(UUID id, UUID ownerId);
 }

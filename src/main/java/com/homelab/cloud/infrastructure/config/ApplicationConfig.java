@@ -132,4 +132,15 @@ public class ApplicationConfig {
                 fileItemRepositoryPort,
                 folderRepositoryPort);
     }
+
+    @Bean
+    public DownloadFileUseCase downloadFileUseCase(
+            FileItemRepositoryPort fileItemRepositoryPort,
+            PhysicalStoragePort physicalStoragePort){
+        return new com.homelab.cloud.application.service.DownloadFileService(
+                fileItemRepositoryPort,
+                physicalStoragePort);
+    }
+
+
 }

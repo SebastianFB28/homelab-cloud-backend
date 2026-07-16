@@ -36,6 +36,11 @@ public class FileItemPersistenceAdapter implements FileItemRepositoryPort {
     }
 
     @Override
+    public Optional<FileItem> findByIdAndOwnerId(UUID id, UUID ownerId) {
+        return repository.findByIdAndOwnerId(id, ownerId).map(this::toDomain);
+    }
+
+    @Override
     public List<FileItem> findByParentFolderIdAndOwnerId(UUID parentFolderId, UUID ownerId) {
         return repository.findByParentFolderIdAndOwnerId(parentFolderId, ownerId)
                 .stream()

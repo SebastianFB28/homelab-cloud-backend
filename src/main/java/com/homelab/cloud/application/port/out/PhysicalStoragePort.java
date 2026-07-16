@@ -14,4 +14,6 @@ public interface PhysicalStoragePort {
      */
     void deleteFile(String physicalPath);
 
+    InputStream loadFile(String physicalPath);
+
 }
