@@ -4,9 +4,9 @@ package com.homelab.cloud.presentation.controller;
 import com.homelab.cloud.application.port.in.AuthUseCase;
 
 // import Dtos
-import com.homelab.cloud.presentation.dto.AuthDto.RegisterRequest;
-import com.homelab.cloud.presentation.dto.AuthDto.LoginRequest;
-import com.homelab.cloud.presentation.dto.AuthDto.AuthResponse;
+import com.homelab.cloud.presentation.dto.authdto.RegisterRequest;
+import com.homelab.cloud.presentation.dto.authdto.LoginRequest;
+import com.homelab.cloud.presentation.dto.authdto.AuthResponse;
 
 // import lombok
 import lombok.RequiredArgsConstructor;
@@ -16,15 +16,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
 
+// import jakarta validation
+import jakarta.validation.Valid;
+
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
     private final AuthUseCase authUseCase;
 
     @PostMapping("/register")
-    public ResponseEntity<Void> register(@RequestBody RegisterRequest request) {
+    public ResponseEntity<Void> register(@Valid @RequestBody RegisterRequest request) {
         // Llamamos al caso de uso. Como request es un 'record', usamos métodos como email() en vez de getEmail()
         authUseCase.requestAccess(request.email(), request.password(), request.nickname());
 

@@ -1,6 +1,7 @@
 package com.homelab.cloud.application.service;
 
 // model user
+import com.homelab.cloud.domain.exceptions.*;
 import com.homelab.cloud.domain.model.User;
 
 // import emuns the user model
@@ -16,10 +17,6 @@ import com.homelab.cloud.application.port.out.JwtTokenPort;
 import com.homelab.cloud.application.port.out.PasswordEncodePort;
 
 // import the exception the user model
-import com.homelab.cloud.domain.exceptions.UserAlreadyExistsException;
-import com.homelab.cloud.domain.exceptions.InvalidCredentialsException;
-import com.homelab.cloud.domain.exceptions.UserBannedException;
-import com.homelab.cloud.domain.exceptions.UserNotApprovedException;
 
 // import lombok required for the constructor
 import lombok.RequiredArgsConstructor;
@@ -63,6 +60,11 @@ public class AuthService implements  AuthUseCase{
         // validate if the user is banned
         if (user.getStatus() == AccessStatus.BANNED){
             throw new UserBannedException();
+        }
+
+        // validate if the user is rejected
+        if (user.getStatus() == AccessStatus.REJECTED){
+            throw new UserRejectedException();
         }
 
         // generate the jwt token
