@@ -12,7 +12,7 @@ RUN mvn clean package -DskipTests
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 # Copiamos solo el archivo JAR resultante de la etapa anterior
-COPY --from build /app/target/*.jar app.jar
+COPY --from=build /app/target/*.jar app.jar
 
 # Definimos variables de entorno por defecto (vacías o genéricas)
 ENV DB_URL=jdbc:postgresql://postgres-db:5432/homelab_db
