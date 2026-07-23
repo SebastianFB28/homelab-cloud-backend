@@ -4,6 +4,7 @@ import com.homelab.cloud.domain.exceptions.*;
 import com.homelab.cloud.presentation.dto.authdto.ErrorResponse;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -15,6 +16,7 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
@@ -100,12 +102,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleGenericException(Exception ex) {
+        // 3. Imprime la traza completa en los logs de Docker
+        log.error("⚠️ Unhandled exception caught in GlobalExceptionHandler:", ex);
+
+        // 4. Te devuelve el mensaje detallado para no andar a ciegas en desarrollo
+        String message = (ex.getMessage() != null) ? ex.getMessage() : "Ocurrió un error interno en el servidor";
+
         ErrorResponse error = new ErrorResponse(
-                "Ocurrió un error interno en el servidor",
-                HttpStatus.INTERNAL_SERVER_ERROR.value(), // 500 Internal Server Error
+                message,
+                HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 LocalDateTime.now()
         );
-        // Tip: usa un logger aquí en el futuro -> log.error("Unhandled exception: ", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
