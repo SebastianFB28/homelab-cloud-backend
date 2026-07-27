@@ -61,11 +61,13 @@ public class ApplicationConfig {
     @Bean
     public IUpdateUserByAdminUseCase updateUserByAdminUseCase(
             UserRepositoryPort userRepositoryPort,
-            PasswordEncodePort passwordEncodePort
+            PasswordEncodePort passwordEncodePort,
+            EventPublisherPort eventPublisherPort
     ) {
         return new com.homelab.cloud.application.service.UpdateUserByAdminService(
                 userRepositoryPort,
-                passwordEncodePort
+                passwordEncodePort,
+                eventPublisherPort
         );
     }
 

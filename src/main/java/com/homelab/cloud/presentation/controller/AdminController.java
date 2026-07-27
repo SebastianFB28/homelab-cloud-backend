@@ -67,6 +67,12 @@ public class AdminController {
         return ResponseEntity.ok().build();
     }
 
+    /**
+     * complete update of a user by an  admin
+     * @param userId The user Id
+     * @param request The request body containing the updated user information
+     * @return A ResponseEntity with no content
+     */
     @PutMapping("/{userId}")
     public ResponseEntity<Void> updateUserByAdmin (
             @PathVariable UUID userId,
@@ -84,7 +90,7 @@ public class AdminController {
     }
 
     /**
-     * Physical deletion for a user
+     * Physical delete for a user
      * @param userID
      * @return
      */

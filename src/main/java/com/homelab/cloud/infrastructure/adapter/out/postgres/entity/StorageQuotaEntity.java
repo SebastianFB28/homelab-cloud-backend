@@ -1,5 +1,6 @@
 package com.homelab.cloud.infrastructure.adapter.out.postgres.entity;
 
+import com.homelab.cloud.domain.enums.StoragePlan;
 import com.homelab.cloud.domain.model.StorageQuota;
 import jakarta.persistence.*;
 import lombok.*;
@@ -27,6 +28,9 @@ public class StorageQuotaEntity {
     @Column(name = "used_capacity_bytes", nullable = false)
     private Long usedCapacityBytes;
 
+    @Enumerated(EnumType.STRING)
+    private StoragePlan storagePlan;
+
     // Relación lazy con el usuario para mantener integridad referencial a nivel de JPA
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "id", insertable = false, updatable = false)
@@ -39,6 +43,7 @@ public class StorageQuotaEntity {
                 .userId(domain.getUserId())
                 .maxCapacityBytes(domain.getMaxCapacityInBytes())
                 .usedCapacityBytes(domain.getUsedCapacityInBytes())
+                .storagePlan(domain.getStoragePlan())
                 .build();
     }
 
@@ -48,6 +53,7 @@ public class StorageQuotaEntity {
                 .userId(this.userId)
                 .maxCapacityInBytes(this.maxCapacityBytes)
                 .usedCapacityInBytes(this.usedCapacityBytes)
+                .storagePlan(this.storagePlan)
                 .build();
     }
 }

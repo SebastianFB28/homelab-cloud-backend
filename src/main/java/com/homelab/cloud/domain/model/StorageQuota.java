@@ -1,5 +1,6 @@
 package com.homelab.cloud.domain.model;
 
+import com.homelab.cloud.domain.enums.StoragePlan;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,17 +17,17 @@ public class StorageQuota {
     private final UUID userId;
     private long maxCapacityInBytes;
     private long usedCapacityInBytes;
+    private StoragePlan storagePlan;
 
-    // initial space constant for a user
-    public static final long DEFAULT_MAX_CAPACITY_BYTES = 10L * 1024 * 1024 * 1024;
 
     // Factory method para inicializar la cuota de un nuevo usuario
     public static StorageQuota createDefault(UUID userId) {
         return StorageQuota.builder()
                 .id(UUID.randomUUID())
                 .userId(userId)
-                .maxCapacityInBytes(DEFAULT_MAX_CAPACITY_BYTES)
+                .maxCapacityInBytes(StoragePlan.BASIC.getCapacityInBytes())
                 .usedCapacityInBytes(0L)
+                .storagePlan(StoragePlan.BASIC)
                 .build();
     }
 

@@ -1,6 +1,8 @@
 package com.homelab.cloud.application.service;
 
+import com.homelab.cloud.application.event.UserApprovedEvent;
 import com.homelab.cloud.application.port.in.IUpdateUserByAdminUseCase;
+import com.homelab.cloud.application.port.out.EventPublisherPort;
 import com.homelab.cloud.application.port.out.PasswordEncodePort;
 import com.homelab.cloud.application.port.out.UserRepositoryPort;
 import com.homelab.cloud.domain.enums.AccessStatus;
@@ -16,7 +18,7 @@ public class UpdateUserByAdminService implements IUpdateUserByAdminUseCase {
 
     private final UserRepositoryPort userRepositoryPort;
     private final PasswordEncodePort passwordEncodePort;
-
+    private final EventPublisherPort eventPublisherPort;
 
     /**
      * We retrieve the entity from the database, check if the password has
@@ -35,12 +37,29 @@ public class UpdateUserByAdminService implements IUpdateUserByAdminUseCase {
 
         String passwordEncoded = null;
 
+
+
         if (rawPassword != null && !rawPassword.isBlank()) {
             passwordEncoded = passwordEncodePort.encode(rawPassword);
         }
 
+        boolean shouldPublishEvent = user.wasApprovedEvent(status);
+
+
         user.updateByAdmin(nickname, passwordEncoded, role, status);
 
+
+        System.out.println("boelanno  = " + shouldPublishEvent);
+
         userRepositoryPort.save(user);
+
+        // We trigger the event.
+        if (shouldPublishEvent){
+            eventPublisherPort.publishUserApproved(new UserApprovedEvent(user.getId()));
+            System.out.println("entramos al eveneto ");
+        }
+
+        System.out.println("User updated by admin: " + user.getId() + ", nickname: " + user.getNickname() + ", role: " + user.getRole() + ", status: " + user.getStatus());
+
     }
 }
