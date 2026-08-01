@@ -62,7 +62,7 @@ public class SecurityConfig {
         ));
 
         // Permitimos los métodos HTTP que vas a usar
-        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS","PATCH"));
 
         // Permitimos todos los headers
         configuration.setAllowedHeaders(List.of("*"));

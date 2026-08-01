@@ -61,13 +61,11 @@ public class ApplicationConfig {
     @Bean
     public IUpdateUserByAdminUseCase updateUserByAdminUseCase(
             UserRepositoryPort userRepositoryPort,
-            PasswordEncodePort passwordEncodePort,
-            EventPublisherPort eventPublisherPort
+            PasswordEncodePort passwordEncodePort
     ) {
         return new com.homelab.cloud.application.service.UpdateUserByAdminService(
                 userRepositoryPort,
-                passwordEncodePort,
-                eventPublisherPort
+                passwordEncodePort
         );
     }
 
@@ -142,6 +140,13 @@ public class ApplicationConfig {
         return new com.homelab.cloud.application.service.DownloadFileService(
                 fileItemRepositoryPort,
                 physicalStoragePort);
+    }
+
+    @Bean
+    public IUpdateStorageQuotaUseCase updateStorageQuotaUseCase (
+            StorageQuotaRepositoryPort storageQuotaRepositoryPort
+    ){
+        return new com.homelab.cloud.application.service.UpdateStorageQuotaService(storageQuotaRepositoryPort);
     }
 
 

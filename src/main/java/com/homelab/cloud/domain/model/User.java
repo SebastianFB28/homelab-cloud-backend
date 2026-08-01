@@ -40,8 +40,16 @@ public class User {
     public void changeAccessStatus(AccessStatus newStatus) {
 
         // Implement the logic to prevent changing status from BANNED to PENDING
-        if (this.status == AccessStatus.BANNED ){
+        if (this.status == AccessStatus.BANNED  && newStatus ==AccessStatus.PENDING) {
             throw new UserBannedException("Usuario baneado no puede ser cambiado a pendiente");
+        }
+
+        if (this.status == AccessStatus.APPROVED && newStatus == AccessStatus.PENDING) {
+            throw new UserBannedException("Usuario aprobado no puede ser cambiado a pendiente");
+        }
+
+        if (this.status == AccessStatus.PENDING && newStatus == AccessStatus.BANNED) {
+            throw new UserBannedException("Usuario pendiente no puede se baneado");
         }
         this.status = newStatus;
     }
@@ -62,8 +70,7 @@ public class User {
      * @return
      */
     public boolean wasApprovedEvent(AccessStatus newStatus) {
-        return this.status != AccessStatus.APPROVED
-                && newStatus == AccessStatus.APPROVED;
+        return this.status == AccessStatus.PENDING && newStatus == AccessStatus.APPROVED;
     }
 
     /**

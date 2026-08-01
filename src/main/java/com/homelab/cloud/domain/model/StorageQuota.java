@@ -44,25 +44,19 @@ public class StorageQuota {
         this.usedCapacityInBytes += sizeInBytes;
     }
 
-    public void releaseSpace(long sizeInBytes) {
-        if (this.usedCapacityInBytes - sizeInBytes < 0) {
-            this.usedCapacityInBytes = 0;
-        } else {
-            this.usedCapacityInBytes -= sizeInBytes;
+
+    public void validateAndUpdateStoragePlan(StoragePlan newStoragePlan) {
+        if (newStoragePlan == null) {
+            throw new IllegalArgumentException("El nuevo plan de almacenamiento no puede ser nulo.");
+        }
+        if (newStoragePlan.getCapacityInBytes() < this.usedCapacityInBytes) {
+            throw new IllegalArgumentException("El nuevo plan de almacenamiento no puede ser menor al espacio ya utilizado.");
         }
     }
 
-    public void updateMaxCapacity(long newMaxCapacityInBytes) {
-        if (newMaxCapacityInBytes < this.usedCapacityInBytes) {
-            throw new IllegalArgumentException("La nueva capacidad no puede ser menor al espacio ya utilizado.");
-        }
-        this.maxCapacityInBytes = newMaxCapacityInBytes;
-    }
-
-    public void addExtraSpace(long extraSpaceInBytes) {
-        if (extraSpaceInBytes <= 0) {
-            throw new IllegalArgumentException("El espacio a añadir debe ser mayor a cero.");
-        }
-        this.maxCapacityInBytes += extraSpaceInBytes;
+    public void updateStoragePlan(StoragePlan newStoragePlan) {
+        validateAndUpdateStoragePlan(newStoragePlan);
+        this.storagePlan = newStoragePlan;
+        this.maxCapacityInBytes = newStoragePlan.getCapacityInBytes();
     }
 }

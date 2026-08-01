@@ -1,12 +1,10 @@
 package com.homelab.cloud.presentation.controller;
 
 // import port in
-import com.homelab.cloud.application.port.in.IDeleteUserUseCase;
-import com.homelab.cloud.application.port.in.IGetUsersByStatusUseCase;
-import com.homelab.cloud.application.port.in.IUpdateUserStatusUseCase;
-import com.homelab.cloud.application.port.in.IUpdateUserByAdminUseCase;
+import com.homelab.cloud.application.port.in.*;
 // import dtos
 import com.homelab.cloud.domain.enums.AccessStatus;
+import com.homelab.cloud.presentation.dto.userdto.AdminUpdateUserStorage;
 import com.homelab.cloud.presentation.dto.userdto.UserResponse;
 import com.homelab.cloud.presentation.dto.userdto.AdminUpdateUserRequest;
 
@@ -33,6 +31,7 @@ public class AdminController {
     private final IUpdateUserStatusUseCase updateUserStatusUseCase;
     private final IUpdateUserByAdminUseCase updateUserByAdminUseCase;
     private final IDeleteUserUseCase deleteUserUseCase;
+    private final IUpdateStorageQuotaUseCase updateStorageQuotaUseCase;
 
 
     /**
@@ -102,12 +101,28 @@ public class AdminController {
         return ResponseEntity.noContent().build();
     }
 
-    // 2. SOFT DELETE (Borrado lógico)
-    // URL en Postman: PATCH http://localhost:8080/api/v1/admin/users/{userId}/soft-delete
+    /**
+     * soft delete for a user
+     * @param userId
+     * @return
+     */
     @PatchMapping("/{userId}/soft-delete")
     public ResponseEntity<Void> softDeleteUser(@PathVariable UUID userId) {
         deleteUserUseCase.sofDelete(userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PatchMapping("/{userId}/update-storage-quota")
+    public ResponseEntity<Void> updateStorageQuota(
+            @PathVariable UUID userId,
+            @RequestBody AdminUpdateUserStorage request) {
+
+        System.out.println("plan entandoooooooooooooooooooooo"+request.storagePlan());
+
+        updateStorageQuotaUseCase.update(userId, request.storagePlan());
+
+        return ResponseEntity.ok().build();
+
     }
 
     
